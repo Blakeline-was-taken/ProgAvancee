@@ -1,33 +1,36 @@
 import java.awt.*;
 import javax.swing.*;
 
-class UnMobile extends JPanel implements Runnable
-{
+class UnMobile extends JPanel implements Runnable{
     int saLargeur, saHauteur, sonDebDessin;
     final int sonPas = 10, sonTemps=50, sonCote=40;
     
-    UnMobile(int telleLargeur, int telleHauteur)
-    {
-	super();
-	saLargeur = telleLargeur;
-	saHauteur = telleHauteur;
-	setSize(telleLargeur, telleHauteur);
+    UnMobile(int telleLargeur, int telleHauteur){
+		super();
+		saLargeur = telleLargeur;
+		saHauteur = telleHauteur;
+		setSize(telleLargeur, telleHauteur);
     }
 
-    public void run()
-    {
-	for (sonDebDessin=0; sonDebDessin < saLargeur - sonPas; sonDebDessin+= sonPas)
-	    {
-		repaint();
-		try{Thread.sleep(sonTemps);}
-		catch (InterruptedException telleExcp)
-		    {telleExcp.printStackTrace();}
-	    }
+    public void run(){
+		// Cette boucle fait se déplacer le mobile de gauche à droite jusqu'au bout de la fenêtre
+		for (sonDebDessin=0; sonDebDessin < saLargeur - sonPas; sonDebDessin += sonPas){
+			repaint();
+			try{Thread.sleep(sonTemps);}
+			catch (InterruptedException telleExcp)
+			{telleExcp.printStackTrace();}
+		}
+		// Même chose, mais de droite à gauche
+		for (sonDebDessin=saLargeur; sonDebDessin > sonPas; sonDebDessin -= sonPas){
+			repaint();
+			try{Thread.sleep(sonTemps);}
+			catch (InterruptedException telleExcp)
+			{telleExcp.printStackTrace();}
+		}
     }
 
-    public void paintComponent(Graphics telCG)
-    {
-	super.paintComponent(telCG);
-	telCG.fillRect(sonDebDessin, saHauteur/2, sonCote, sonCote);
+    public void paintComponent(Graphics telCG){
+		super.paintComponent(telCG);
+		telCG.fillRect(sonDebDessin, saHauteur/2, sonCote, sonCote);
     }
 }
