@@ -71,3 +71,42 @@ Nous avons étendu la fonctionnalité de notre application pour permettre le con
 C'est dans cet exercice qu'on voit vraiment l'intérêt des threads, car les deux mobiles étant lancés dans des processus différents, il est possible pour l'un de rester dans une boucle à attendre tandis que l'autre continue sa route.
 
 Au final, on a donc une fenêtre avec deux mobiles qui se déplacent simultanément et indépendamment l'un de l'autre, avec la possibilité de les arrêter ou de les relancer individuellement via leurs boutons respectifs.
+
+---
+
+# TP2
+
+L'objectif est de faire afficher simultanément deux messages distincts, "AAA" et "BB". Toutefois, ces messages ne doivent pas se mélanger à l'écran. Les sorties doivent être soit **AAABB** ou **BBAAA**, mais surtout pas de mélange du style **ABABA** ou **AABBA**.
+
+Le problème, c'est que les deux tâches accèdent à la ressource partagée (l'affichage) en même temps, sans aucune coordination. Comme les threads sont exécutés en parallèle, ils peuvent interrompre l'affichage de l'autre, ce qui provoque un mélange des caractères à l'écran.
+
+## Section critique
+
+Cette situation est due à l'absence de **section critique**, une portion de code où une tâche doit avoir un accès exclusif à la ressource partagée (ici, l'écran) pour éviter que les autres tâches interfèrent. Autrement dit, c'est une section où il ne faut laisser qu'un seul thread s'exécuter à la fois.
+
+Une façon de résoudre ce problème est d'utiliser un **verrou Mutex** (mutual exclusion). Le Mutex permet à un seul thread d'accéder à une ressource partagée à la fois, bloquant les autres jusqu'à ce que le thread ayant verrouillé le Mutex le libère. Cela garantit qu'à tout moment, une seule tâche peut entrer dans la section critique. En java, il suffit d'ajouter le mot `synchronized` à la déclaration d'une méthode pour que celle-ci puisse être verrouillée.
+
+## Sémaphore
+
+Il existe derrière plusieurs façons de gérer ces verrous, mais celle qu'on va utiliser, c'est le **sémaphore**. Il fonctionne comme un compteur : il autorise l'accès à la ressource si une valeur (appelée `valeurInitiale`) est positive, et décrémente ce compteur lorsque la ressource est accédée. Une fois que la tâche a terminé, elle incrémente le compteur pour libérer la ressource et permettre à une autre tâche d'y accéder.
+
+Le mot "sémaphore" vient des systèmes de signalisation visuelle utilisés en mer pour communiquer avec les bateaux, notamment pour réguler leur accostage. En informatique, l'analogie est similaire : le sémaphore régule l'accès aux ressources partagées entre différents threads, empêchant les conflits d'accès.
+
+Du coup, concrètement, comment le sémaphore fonctionne en code ? Lorsqu'une tâche veut entrer dans la section critique (l'affichage dans notre cas), elle appelle la méthode `syncWait()` du sémaphore (qui décrémente le compteur). Si la valeur du sémaphore est positive, la tâche peut accéder à la ressource, sinon elle doit attendre que la ressource soit libérée. Une fois la section critique terminée, la tâche appelle la méthode `syncSignal()` (qui incrémente le compteur), libérant ainsi la ressource pour les autres processus.
+
+## Exercice 1
+
+### Explication du code de l'exercice 1
+
+Dans cet exercice, nous avons utilisé un **sémaphore binaire**, ce qui veut dire que la `valeurInitiale` commence à 1, ne laissant ainsi qu'un seul thread accéder à la ressource à la fois.
+
+1. **Classe `semaphore` et `semaphoreBinaire`** :  
+   Ce sont les classes dont nous avons déjà parlé, semaphore implémente les méthodes `syncWait()` et `syncSignal`, et semaphoreBinaire mets juste la `valeurInitiale` à 1.
+
+
+2. **Classe `Affichage`** :  
+   Chaque tâche (TA et TB) correspond à un thread `Affichage` qui essaie d'imprimer son texte ("AAA" ou "BB"). Avant de commencer à afficher, la méthode `run()` appelle `syncWait()` pour attendre son tour. Ensuite, le texte est affiché caractère par caractère. Une fois terminé, le sémaphore est relâché avec `syncSignal()`, permettant à l'autre thread d'accéder à la ressource.
+
+
+3. **Classe `Main`** :  
+   Ici, un sémaphore binaire est initialisé, et est donné en paramètre aux deux threads TA et TB avant d'être lancés. Le sémaphore gère l'ordre dans lequel ces threads affichent leur texte, assurant que l'un doit terminer avant que l'autre puisse commencer.

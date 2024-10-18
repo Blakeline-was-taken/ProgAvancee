@@ -1,3 +1,5 @@
+package tp2;
+
 public abstract class semaphore {
 
     protected int valeur=0;
@@ -7,12 +9,10 @@ public abstract class semaphore {
     }
 
     public synchronized void syncWait(){
-	try {
-	    while(valeur<=0){
-		wait();
-        }
-	    valeur--;
-	} catch(InterruptedException e){}
+        try {
+            while(valeur<=0){wait();}
+            valeur--;
+        } catch (InterruptedException e) {}
     }
 
     public synchronized void syncSignal(){

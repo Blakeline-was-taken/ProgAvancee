@@ -1,23 +1,21 @@
-/**
- * 
- */
-import java.io.*;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.BufferedReader;
-import java.lang.String;
+package tp2;
 
 public class Affichage extends Thread{
-	String texte; 
+	String texte;
+	semaphore sem;
 
-	public Affichage (String txt){texte=txt;}
+	public Affichage (String txt, semaphore thread){
+		texte=txt;
+		sem=thread;
+	}
 	
 	public void run(){
-
-		for (int i=0; i<texte.length(); i++){
+		sem.syncWait();
+		for (int i = 0; i < texte.length(); i++){
 		    System.out.print(texte.charAt(i));
-		    try {sleep(100);} catch(InterruptedException e){};
+		    try {sleep(100);}
+			catch (InterruptedException e) {}
 		}
-
+		sem.syncSignal();
 	}
 }
