@@ -4,6 +4,28 @@ Ce dépôt Git servira de lieu de stockage pour tous les travaux pratiques liés
 
 Ces différentes thématiques seront explorées à travers des exercices pratiques qui serviront de base pour le projet de SAÉ de ce semestre. L'objectif est d'acquérir une maîtrise suffisante de ces concepts afin de pouvoir les appliquer efficacement dans le cadre de ce projet.
 
+Je précise également que ce rapport et ce dépot Git ont été créés vers la fin du TP3 de ce module. En effet, j'avais fait un premier dépôt Git sur lequel j'ai eu des problèmes liés à des push qui n'ont pas correctement été faits, résultant en la perte de mon premier rapport, ainsi que ma progression sur les TPs qui ne s'affichaient pas correctement sur Github. Ce faisant, j'ai décidé de recommencer à zéro, en commitant le code que j'avais fait pour les différents TPs et en rédigeant ce rapport au fur et à mesure. 
+
+---
+
+# Architecture matérielle
+
+Au cours des différents TP que nous avons réalisé dans ce module, nous avons, à chaque fois que nous sommes allé dans de nouvelles salles, cherché les configurations matérielles des ordinateurs que nous avons utilisés :
+
+|                           | G25                                                                                                 | I21                                                                                                 | G24                                                                                 |
+|---------------------------|-----------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| **CPU**                   | i7 4790, 4c/8t, 3.6GHz, 4.0GHz Turbo, 64-bit                                                        | i7 4790, 4c/8t, 3.6GHz, 4.0GHz Turbo, 64-bit                                                        | i7-12700T, 12c/20t (8p-core, 4e-core), 1.4GHz - 4.7GHz Turbo, 64-bit                |
+| **RAM**                   | 8Go RAM Micron MT16KTF1G64AZ-1G6E1 DDR3 PC3L-12800U 2Rx8 1600MHz 1.35v CL11                         | 2x8Go RAM Micron MT16KTF1G64AZ-1G6E1 DDR3 PC3L-12800U 2Rx8 1600MHz 1.35v CL11                       | 2x32Go RAM Micron MTC16G2085S1SC-48BA1 SODIMM-DDR5 PC5-38400 2Rx8 4800MHz 1.1v CL40 |
+| **GPU**                   | eGPU Intel, Intel® HD Graphics 4600, Mémoire vidéo maxi du sous-ensemble graphique 2Go RAM for VRAM | eGPU Intel, Intel® HD Graphics 4600, Mémoire vidéo maxi du sous-ensemble graphique 2Go RAM for VRAM | eGPU Intel, Intel® HD Graphics 770, 32 cores, 300MHz - 1.5GHz Turbo                 |
+| **Disque**                | LITEONIT LCS-256L9S-11 256Go, 2.5", 7mm SATA 6Gb/s                                                  | LITEONIT LCS-256L9S-11 256Go, 2.5", 7mm SATA 6Gb/s                                                  | SOLIDIGM SSDPFKNU512GZ 512Go M.2 NVMe PCIe                                          |
+| **Type de disque**        | SSD                                                                                                 | SSD                                                                                                 | SSD                                                                                 |
+| **Fichier de pagination** | Oui                                                                                                 | Oui                                                                                                 | Oui                                                                                 |
+| **Fichier d’échange**     | Oui                                                                                                 | Oui                                                                                                 | Oui                                                                                 |
+
+La raison pour laquelle nous l'avons fait est, tout d'abord, car une grande partie du cours porte sur ces architectures matérielles, et notamment sur la caractérisation des processeurs (multi-core, multi-threads...). Mais également, parce que les performances des threads (que nous allons énormément utiliser par la suite) peuvent varier en fonction de la capacité de traitement parallèle des machines.
+
+Toutes ces informations peuvent être obtenues sur windows simplement en allant dans le Gestionnaire des Tâches et en allant voir les composants. On peut ensuite chercher la carte graphique, le processeur etc sur internet pour avoir les informations voulues.
+
 ---
 
 # TP1
