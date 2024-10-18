@@ -11,11 +11,13 @@ public abstract class semaphore {
     public synchronized void syncWait(){
         try {
             while(valeur<=0){wait();}
+            System.out.println("j'entre en section critique.");
             valeur--;
         } catch (InterruptedException e) {}
     }
 
     public synchronized void syncSignal(){
-	if(++valeur > 0) notifyAll();
+	    if(++valeur > 0) notifyAll();
+        System.out.println("je sors de section critique.");
     }
 }

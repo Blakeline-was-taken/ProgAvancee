@@ -110,3 +110,7 @@ Dans cet exercice, nous avons utilisé un **sémaphore binaire**, ce qui veut di
 
 3. **Classe `Main`** :  
    Ici, un sémaphore binaire est initialisé, et est donné en paramètre aux deux threads TA et TB avant d'être lancés. Le sémaphore gère l'ordre dans lequel ces threads affichent leur texte, assurant que l'un doit terminer avant que l'autre puisse commencer.
+
+## Exercice 2
+
+Bon celui-ci était assez simple, et visait simplement à tester ma compréhension des sections critiques. Il suffit de faire afficher "J'entre en section critique" quand une tâche décrémente la valeur du sémaphore, et "Je sors de section critique" quand elle l'incrémente, puisque c'est les moments où elle accède à la ressource et où elle la libère.
