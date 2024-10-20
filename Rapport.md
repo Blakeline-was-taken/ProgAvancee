@@ -169,6 +169,8 @@ La BAL joue le rôle de ressource intermédiaire de Moniteur entre ces deux enti
 
 ## Exercice 1
 
+### I1
+
 1. La Classe `BAL`
 
 La classe `BAL` (Boîte Aux Lettres) représente la ressource critique entre le producteur et le consommateur. Elle contient :
@@ -182,3 +184,19 @@ Le **Producteur** est un thread qui génère et dépose des lettres dans la BAL.
 3. La Classe `Consommateur`
 
 Le **Consommateur** est un autre thread qui lit et retire les lettres de la BAL. Il attend qu'une lettre soit déposée si la BAL est vide, et continue de consommer les lettres jusqu'à ce qu'il rencontre la lettre 'Q', qui indique la fin du processus.
+
+### I2
+
+Cette partie demande là encore assez peu de changements par rapport à la version précédente. L'objectif est simplement de permettre à l'utilisateur d'entrer manuellement chaque lettre que le producteur va insérer dans la boîte aux lettres (BAL), plutôt que de définir une liste de lettres à l'avance.
+
+Pour ce faire, on a simplement modifié la classe Producteur de manière à ce qu'elle demande à l'utilisateur d'entrer une lettre à chaque itération. Tant que l'utilisateur n'entre pas la lettre 'Q', le programme continue de fonctionner. Voici les modifications essentielles :
+- La méthode `run()` du Producteur est modifiée pour utiliser un Scanner. Ce dernier permet à l'utilisateur de saisir une lettre à chaque itération.
+- Boucle conditionnelle : la boucle continue tant que la lettre entrée n'est pas 'Q'. Lorsque l'utilisateur entre 'Q', le thread producteur s'arrête et le programme se termine.
+- Le champ `lettres` disparaît étant donné qu'on n'utilise plus une liste finie de lettres.
+- La méthode `main()` ne génère plus cette liste.
+
+Et le reste du code reste inchangé. Cette approche fonctionne bien, mais un petit problème peut survenir. En effet, après que le programme demande à l'utilisateur d'entrer une lettre, il est possible - et à vrai dire, ça arrive quasiment tout le temps -  que le consommateur retire une lettre de la BAL **avant** que l'utilisateur puisse écrire. Dans ce cas, la sortie du consommateur s'afficher dans la boîte de dialogue.
+
+Cela peut entraîner une situation un peu déroutante, où des messages comme "Consommateur a lu : A" apparaissent dans la boîte d'insertion de texte de l'utilisateur. Cela ne cause pas de problème au niveau fonctionnel, mais cela peut rendre l'interface utilisateur un peu confuse.
+
+Pour résoudre ce problème, il faudrait s'assurer que le Scanner fonctionne de manière isolée et n'interfère pas avec les sorties du consommateur, mais ça voudrait dire qu'il faut traiter l'entrée utilisateur comme un thread à part entière, ce qui complique beaucoup le code pour pas grand chose.

@@ -1,20 +1,24 @@
 package tp3;
 
-public class Producteur implements Runnable {
-    private final BAL bal;
-    String[] lettres;
+import java.util.Scanner;
 
-    public Producteur(BAL saBal, String[] sesLettres) {bal = saBal;lettres = sesLettres;}
+public class Producteur implements Runnable {
+    private BAL bal;
+
+    public Producteur(BAL bal) {
+        this.bal = bal;
+    }
 
     public void run() {
+        Scanner scanner = new Scanner(System.in);
         try {
-            for (String lettre : lettres) {
+            String lettre;
+            do {
+                System.out.print("Entrez une lettre à déposer (ou 'Q' pour quitter) : ");
+                lettre = scanner.nextLine();
                 bal.depose(lettre);
-                Thread.sleep(1000);
-            }
-            // Indiquer la fin avec la lettre 'Q'
-            bal.depose("Q");
-        } catch (InterruptedException e) {Thread.currentThread().interrupt();}
+            } while (!lettre.equals("Q"));  // Le programme continue tant que la lettre n'est pas 'Q'
+        } catch (InterruptedException e) {Thread.currentThread().interrupt();
+        } finally {scanner.close();}
     }
 }
-
