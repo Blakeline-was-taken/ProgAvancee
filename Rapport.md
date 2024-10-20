@@ -100,13 +100,13 @@ Au final, on a donc une fenêtre avec deux mobiles qui se déplacent simultaném
 
 L'objectif est de faire afficher simultanément deux messages distincts, "AAA" et "BB". Toutefois, ces messages ne doivent pas se mélanger à l'écran. Les sorties doivent être soit **AAABB** ou **BBAAA**, mais surtout pas de mélange du style **ABABA** ou **AABBA**.
 
-Le problème, c'est que les deux tâches accèdent à la ressource partagée (l'affichage) en même temps, sans aucune coordination. Comme les threads sont exécutés en parallèle, ils peuvent interrompre l'affichage de l'autre, ce qui provoque un mélange des caractères à l'écran.
+Le problème, c'est que les deux tâches accèdent à la ressource critique (l'affichage) en même temps, sans aucune coordination. Comme les threads sont exécutés en parallèle, ils peuvent interrompre l'affichage de l'autre, ce qui provoque un mélange des caractères à l'écran.
 
 ## Section critique
 
-Cette situation est due à l'absence de **section critique**, une portion de code où une tâche doit avoir un accès exclusif à la ressource partagée (ici, l'écran) pour éviter que les autres tâches interfèrent. Autrement dit, c'est une section où il ne faut laisser qu'un seul thread s'exécuter à la fois.
+Cette situation est due à l'absence de **section critique**, une portion de code où une tâche doit avoir un accès exclusif à la ressource critique (ici, l'écran) pour éviter que les autres tâches interfèrent. Autrement dit, c'est une section où il ne faut laisser qu'un seul thread s'exécuter à la fois.
 
-Une façon de résoudre ce problème est d'utiliser un **verrou Mutex** (mutual exclusion). Le Mutex permet à un seul thread d'accéder à une ressource partagée à la fois, bloquant les autres jusqu'à ce que le thread ayant verrouillé le Mutex le libère. Cela garantit qu'à tout moment, une seule tâche peut entrer dans la section critique. En java, il suffit d'ajouter le mot `synchronized` à la déclaration d'une méthode pour que celle-ci puisse être verrouillée.
+Une façon de résoudre ce problème est d'utiliser un **verrou Mutex** (mutual exclusion). Le Mutex permet à un seul thread d'accéder à une ressource critique à la fois, bloquant les autres jusqu'à ce que le thread ayant verrouillé le Mutex le libère. Cela garantit qu'à tout moment, une seule tâche peut entrer dans la section critique. En java, il suffit d'ajouter le mot `synchronized` à la déclaration d'une méthode pour que celle-ci puisse être verrouillée.
 
 ## Sémaphore
 
@@ -136,3 +136,49 @@ Dans cet exercice, nous avons utilisé un **sémaphore binaire**, ce qui veut di
 ## Exercice 2
 
 Bon celui-ci était assez simple, et visait simplement à tester ma compréhension des sections critiques. Il suffit de faire afficher "J'entre en section critique" quand une tâche décrémente la valeur du sémaphore, et "Je sors de section critique" quand elle l'incrémente, puisque c'est les moments où elle accède à la ressource et où elle la libère.
+
+---
+
+# TP3
+
+Ici, nous devons résoudre un problème de communication entre plusieurs threads à travers une ressource critique, en l'occurrence une **boîte aux lettres** (BAL). L'objectif est de permettre à des entités distinctes de **déposer** et de **retirer** des objets (ici des lettres) de cette BAL sans que des erreurs de concurrence n'apparaissent.
+
+Ce que l'on va chercher absolument à éviter, c'est ces deux situations :
+- Un thread tente de déposer une lettre alors que la BAL est déjà pleine, et reste donc bloqué.
+- Un thread essaye de retirer une lettre d'une BAL vide, et reste donc bloqué.
+
+## Utilisation d'un Moniteur
+
+Pour répondre à cette problématique, nous allons utiliser un **moniteur**. Un moniteur est un objet de synchronisation utilisé pour contrôler l'accès à une ressource critique par plusieurs threads, comme le sémaphore. Mais la différence ici c'est que ce sont les méthodes de la classe Moniteur qui sont le point d'entrée des Threads.
+
+Un moniteur fonctionne de la manière suivante :
+- **Exclusion Mutuelle** : Un seul thread à la fois peut accéder aux méthodes ou sections de code critiques.
+- **Condition(s) à valider** : Les threads sont suspendus lorsqu'une condition particulière n'est pas remplie (par exemple, une BAL pleine ou vide). Ce n'est qu'une fois la condition vérifiée (grâce à `notifyAll()`) que les threads sont réveillés et peuvent reprendre leur exécution.
+
+L'utilisation du moniteur permet de s'assurer que :
+- Un thread producteur attendra si la BAL est pleine avant d'ajouter une nouvelle lettre.
+- Un thread consommateur attendra qu'une lettre soit disponible dans la BAL avant de la retirer.
+
+## Modèle Producteur/Consommateur
+
+Le cadre de ce TP nous demande donc d'implémenter le modèle **Producteur/Consommateur**. Ce modèle décrit deux types d'entités :
+- Le **producteur**, qui génère des ressources (ici, des lettres) et les dépose dans une ressource critique.
+- Le **consommateur**, qui prélève ces ressources et les traite.
+
+La BAL joue le rôle de ressource intermédiaire de Moniteur entre ces deux entités. Le producteur doit s'assurer que la BAL n'est pas pleine avant d'y ajouter une lettre, et le consommateur doit vérifier que la BAL contient une lettre avant d'essayer de la retirer. Les deux entités fonctionnent de manière **asynchrone**, mais sont synchronisées via la BAL, en utilisant les méthodes de synchronisation.
+
+## Exercice 1
+
+1. La Classe `BAL`
+
+La classe `BAL` (Boîte Aux Lettres) représente la ressource critique entre le producteur et le consommateur. Elle contient :
+- Une méthode **synchronisée `depose()`** qui permet au producteur de déposer une lettre. Si la BAL est pleine, le thread producteur attend jusqu'à ce qu'une lettre soit retirée.
+- Une méthode **synchronisée `retrait()`** qui permet au consommateur de retirer une lettre. Si la BAL est vide, le thread consommateur attend jusqu'à ce qu'une nouvelle lettre soit déposée.
+
+2. La Classe `Producteur`
+
+Le **Producteur** est un thread qui génère et dépose des lettres dans la BAL. Il effectue cette opération de manière répétée jusqu'à la fin de sa tâche, marquée par la lettre spéciale 'Q'. Avant de déposer une lettre, il vérifie que la BAL n'est pas pleine pour éviter un conflit.
+
+3. La Classe `Consommateur`
+
+Le **Consommateur** est un autre thread qui lit et retire les lettres de la BAL. Il attend qu'une lettre soit déposée si la BAL est vide, et continue de consommer les lettres jusqu'à ce qu'il rencontre la lettre 'Q', qui indique la fin du processus.
