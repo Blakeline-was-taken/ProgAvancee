@@ -141,7 +141,7 @@ Bon celui-ci était assez simple, et visait simplement à tester ma compréhensi
 
 Cet exercice ne figure pas dans le TP2 de base, et pourtant c'est sûrement le plus important. On reprends le code du TP1 avec les mobiles, mais avec quelques modifications importantes. L'affichage est maintenant divisé en trois sections : une section gauche, une section droite, et une section centrale qui sert de **section critique**.
 
-On oublie les boutons qui permettent d'arrêter et de reprendre les mobiles, la particularité ici est que la section centrale, étant critique, ne peut être traversée que par un nombre limité de modèles à la fois, pour simuler visuellement les processus en attente. Pour bien visualiser ça, on a plus 1 ou 2 modèles, mais bien une vingtaine qui circulent de gauche à droite à l'infini.
+On oublie les boutons qui permettent d'arrêter et de reprendre les mobiles, la particularité ici est que la section centrale, étant critique, ne peut être traversée que par un nombre limité de mobiles à la fois, pour simuler visuellement les processus en attente. Pour bien visualiser ça, on a plus 1 ou 2 mobiles, mais bien une vingtaine qui circulent de gauche à droite à l'infini.
 
 ### Sémaphore Général
 
