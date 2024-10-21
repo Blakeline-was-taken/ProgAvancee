@@ -137,6 +137,33 @@ Dans cet exercice, nous avons utilisé un **sémaphore binaire**, ce qui veut di
 
 Bon celui-ci était assez simple, et visait simplement à tester ma compréhension des sections critiques. Il suffit de faire afficher "J'entre en section critique" quand une tâche décrémente la valeur du sémaphore, et "Je sors de section critique" quand elle l'incrémente, puisque c'est les moments où elle accède à la ressource et où elle la libère.
 
+## Exercice 3
+
+Cet exercice ne figure pas dans le TP2 de base, et pourtant c'est sûrement le plus important. On reprends le code du TP1 avec les mobiles, mais avec quelques modifications importantes. L'affichage est maintenant divisé en trois sections : une section gauche, une section droite, et une section centrale qui sert de **section critique**.
+
+On oublie les boutons qui permettent d'arrêter et de reprendre les mobiles, la particularité ici est que la section centrale, étant critique, ne peut être traversée que par un nombre limité de modèles à la fois, pour simuler visuellement les processus en attente. Pour bien visualiser ça, on a plus 1 ou 2 modèles, mais bien une vingtaine qui circulent de gauche à droite à l'infini.
+
+### Sémaphore Général
+
+Pour gérer ce contrôle d'accès à la section critique, nous allons utiliser un **sémaphore général**. C'est l'implémentation la plus simple possible d'un sémaphore, on doit simplement lui donner la `valeurInitiale` en entrée, et il agira en conséquence. Par exemple, un sémaphore général de `valeurInitiale` 5 laissera 5 tâches accéder à la ressource avant de bloquer les autres.
+
+### Fonctionnement
+
+1. **Classe `semaphore` et `semaphoreGeneral`** :
+
+  - Le **sémaphore général** est une extension de la classe `semaphore`, avec une valeur initiale définissant combien de mobiles peuvent simultanément entrer dans la section critique.
+  - La méthode `syncWait()` décrémente la valeur du sémaphore et met un thread en attente si la valeur est à 0, tandis que `syncSignal()` réincrémente la valeur une fois qu'un mobile sort de la section critique, permettant à un autre d'y entrer.
+
+2. **Classe `UnMobile`** :
+
+  - Chaque mobile est représenté par un objet `UnMobile`, qui se déplace de gauche à droite dans la fenêtre. Son mouvement est divisé en trois sections : la première avant la section critique, la section critique elle-même, et la dernière après la section critique.
+  - Lorsqu'un mobile atteint la section critique (représentée par un changement de couleur en rouge), il appelle `sonSemaphore.syncWait()` pour vérifier si la section critique est accessible. Si le nombre de mobiles autorisés est atteint, il attend. Une fois à l'intérieur, la couleur repasse au noir et le mobile traverse la section. Quand il sort de cette section, il appelle `syncSignal()` pour libérer l'accès à d'autres mobiles.
+
+3. **Classe `UneFenetre`** :
+
+  - Cette classe représente la fenêtre contenant tous les mobiles. Le conteneur est divisé en 20 lignes avec un seul mobile par ligne. Un **sémaphore général** est créé avec une valeur initiale de 5, ce qui signifie que seulement 5 mobiles peuvent traverser la section critique simultanément.
+  - Chaque mobile est lancé dans un thread séparé et se déplace à une vitesse aléatoire, simulant ainsi un trafic continu de mobiles voulant accéder à la section centrale (critique).
+
 ---
 
 # TP3

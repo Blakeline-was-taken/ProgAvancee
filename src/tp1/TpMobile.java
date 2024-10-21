@@ -1,4 +1,4 @@
-package tp1;//programme d'un mobile se deplacant de la gauche vers la droite de la fenetre-ecran
+package tp1;
 
 public class TpMobile{
     public static void main(String[] telsArgs){
