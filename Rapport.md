@@ -147,6 +147,8 @@ On oublie les boutons qui permettent d'arrêter et de reprendre les mobiles, la 
 
 Pour gérer ce contrôle d'accès à la section critique, nous allons utiliser un **sémaphore général**. C'est l'implémentation la plus simple possible d'un sémaphore, on doit simplement lui donner la `valeurInitiale` en entrée, et il agira en conséquence. Par exemple, un sémaphore général de `valeurInitiale` 5 laissera 5 tâches accéder à la ressource avant de bloquer les autres.
 
+Je précise ici que, pour ne pas avoir à répéter des fichiers de code sans raison, et par souci d'organisation, cet exercice sera réalisé dans le package **TP1**, bien qu'il s'agisse d'un exercice du TP2.
+
 ### Fonctionnement
 
 1. **Classe `semaphore` et `semaphoreGeneral`** :
