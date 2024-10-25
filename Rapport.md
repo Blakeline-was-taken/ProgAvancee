@@ -4,7 +4,9 @@ Ce dépôt Git servira de lieu de stockage pour tous les travaux pratiques liés
 
 Ces différentes thématiques seront explorées à travers des exercices pratiques qui serviront de base pour le projet de SAÉ de ce semestre. L'objectif est d'acquérir une maîtrise suffisante de ces concepts afin de pouvoir les appliquer efficacement dans le cadre de ce projet.
 
-Pour les diagrammes UML, je précise que je n'ai mis que les méthodes et les attributs pertinents des classes qui s'y figurent, par souci de clarté. Si vous voulez plus de détail, je vous invite à aller regarder le code par vous même, vous pouvez le faire en allant voir leur état au moment du commit correspondant à l'exercice.
+Pour les diagrammes UML présents dans ce rapport et servant à illustrer les différents algorithmes utilisés, je précise que je n'ai mis que les méthodes et les attributs pertinents des classes qui s'y figurent, par souci de clarté. Si vous voulez plus de détail, je vous invite à aller regarder le code par vous même, vous pouvez le faire en allant voir leur état au moment du commit correspondant à l'exercice.
+
+Pour les autres diagrammes et graphiques, toutes les images viennent de Wikipédia et des pages parlant des sujets correspondants.
 
 Je précise également que ce rapport et ce dépot Git ont été créés vers la fin du TP3 de ce module. En effet, j'avais fait un premier dépôt Git sur lequel j'ai eu des problèmes liés à des push qui n'ont pas correctement été faits, résultant en la perte de mon premier rapport, ainsi que ma progression sur les TPs qui ne s'affichaient pas correctement sur Github. Ce faisant, j'ai décidé de recommencer à zéro, en commitant le code que j'avais fait pour les différents TPs et en rédigeant ce rapport au fur et à mesure. 
 
@@ -41,6 +43,8 @@ Un **thread** est une unité d'exécution indépendante dans un programme (ou Pr
 ### Processus léger : cycle de vie
 
 Un **thread** suit trois états principaux :
+
+![cycle_de_vie_thread](docs/cycle_de_vie_thread.png)
 
 1. **Prêt** : Le thread est prêt à être exécuté, mais attend qu'un cœur de processeur soit disponible.
 2. **En exécution** : Le thread est sélectionné par l'OS et utilise les ressources du processeur.
@@ -128,7 +132,9 @@ Il existe derrière plusieurs façons de gérer ces verrous, mais celle qu'on va
 
 Le mot "sémaphore" vient des systèmes de signalisation visuelle utilisés en mer pour communiquer avec les bateaux, notamment pour réguler leur accostage. En informatique, l'analogie est similaire : le sémaphore régule l'accès aux ressources partagées entre différents threads, empêchant les conflits d'accès.
 
-Du coup, concrètement, comment le sémaphore fonctionne en code ? Lorsqu'une tâche veut entrer dans la section critique (l'affichage dans notre cas), elle appelle la méthode `syncWait()` du sémaphore (qui décrémente le compteur). Si la valeur du sémaphore est positive, la tâche peut accéder à la ressource, sinon elle doit attendre que la ressource soit libérée. Une fois la section critique terminée, la tâche appelle la méthode `syncSignal()` (qui incrémente le compteur), libérant ainsi la ressource pour les autres processus.
+![diagramme_semaphore](docs/semaphore.png)
+
+Du coup, concrètement, comment le sémaphore fonctionne en code ? Lorsqu'une tâche veut entrer dans la section critique (l'affichage dans notre cas), elle appelle la méthode `syncWait()` (ou `P`, dans le graphique) du sémaphore, qui décrémente le compteur. Si la valeur du sémaphore est positive, la tâche peut accéder à la ressource, sinon elle doit attendre que la ressource soit libérée. Une fois la section critique terminée, la tâche appelle la méthode `syncSignal()` (ou `V`, dans le graphique) qui incrémente le compteur, libérant ainsi la ressource pour les autres processus.
 
 [Pour en savoir plus sur les sémaphores.](https://fr.wikipedia.org/wiki/S%C3%A9maphore_(informatique))
 
