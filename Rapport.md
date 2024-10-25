@@ -229,3 +229,47 @@ Et le reste du code reste inchangé. Cette approche fonctionne bien, mais un pet
 Cela peut entraîner une situation un peu déroutante, où des messages comme "Consommateur a lu : A" apparaissent dans la boîte d'insertion de texte de l'utilisateur. Cela ne cause pas de problème au niveau fonctionnel, mais cela peut rendre l'interface utilisateur un peu confuse.
 
 Pour résoudre ce problème, il faudrait s'assurer que le Scanner fonctionne de manière isolée et n'interfère pas avec les sorties du consommateur, mais ça voudrait dire qu'il faut traiter l'entrée utilisateur comme un thread à part entière, ce qui complique beaucoup le code pour pas grand chose.
+
+## Exercice 2
+
+Pour cet exercice, nous allons suivre les instructions du [blog de José Paumard](https://blog.paumard.org/cours/java-api/chap05-concurrent-queues.html) pour explorer une approche avancée du modèle Producteur/Consommateur en Java. Ce blog propose une structure de code utilisant l’API Concurrent et la classe BlockingQueue, qui facilitent la gestion des files d’attente et la synchronisation des threads.
+
+L’objectif de cette deuxième partie sera donc d’adapter les éléments décrits sur le blog à notre propre modèle. Concrètement, ça veut juste dire qu'on garde nos éléments Producteur, Consommateur et BAL au lieu de Boulanger, Mangeur et Boulangerie. De plus, la classe Pain ne sera pas nécessaire ici étant donné que ce ne sont que des strings.
+
+### L’API Concurrent
+
+L’API Concurrent de Java offre un ensemble d’outils pour la programmation multithread et la gestion des tâches concurrentes (d'où le nom). Elle fournit des classes et interfaces pour synchroniser l’accès aux ressources critiques, gérer des tâches asynchrones et contrôler le comportement des threads sans recourir aux traditionnels blocs `synchronized`.
+
+On va principalement utiliser l’API Concurrent pour ses collections sécurisées pour le multithreading, et notamment ce qui va principalement nous intéresser, des **files d'attente bloquantes** pour simplifier les interactions entre producteurs et consommateurs. Mais il faut savoir qu'elle inclut aussi des outils de synchronisation comme les sémaphores, justement.
+
+### La BlockingQueue
+
+La `BlockingQueue` est une structure de données spécialement conçue pour gérer la synchronisation entre plusieurs threads. Elle est dite bloquante car elle est capable de mettre en pause automatiquement un thread en attente d'une opération. Par exemple :
+- Si le producteur essaie d’ajouter une lettre mais que la file est pleine, la BlockingQueue le met en pause jusqu’à ce qu’une place se libère. (C'est ce que fait la méthode `put()`)
+- Si le consommateur tente de retirer une lettre alors que la file est vide, elle le met en pause jusqu’à ce qu’une nouvelle lettre soit disponible. (C'est ce que fait la méthode `take()`)
+
+Avec une BlockingQueue, on n’a plus besoin de gérer nous-mêmes les blocages et les notifications des threads (`synchronized`, `wait()`, `notifyAll()`), car elle se charge de tout cela automatiquement.
+
+### Adaptation du code
+
+1. Changement de BAL : 
+
+`BAL` utilisera maintenant une `BlockingQueue<String>` au lieu d’une simple variable `lettre`. Cela lui permettra de gérer directement les lettres comme une file d'attente, sans besoin de synchronisation explicite.
+
+2. Classe Producteur :
+
+Le producteur insérera désormais les lettres dans `BAL` via la méthode `put()`, qui bloque automatiquement si la file est pleine. De plus, on retire le changement où on écrit nous même les lettre. Il fera toutes les lettres et terminera par "*", ce qui tuera les processus. (rôle du `PainEmpoisonne` dans le blog.)
+
+3. Classe Consommateur :
+
+Le consommateur retirera les lettres avec la méthode `take()`, qui bloque si la file est vide. Nous n’avons plus besoin d’écrire des boucles d’attente ou des vérifications d’état puisque la `BlockingQueue` s’occupe de ces aspects. Si la lettre est "*", le thread s'arrête.
+
+4. Classe MainTP3 :
+
+Au lieu d'instancier un producteur et un consommateur, on va en instancier plusieurs. 4 producteurs et 3 consommateurs, pour être précis.
+
+### Résultat
+
+Les producteurs étant plus nombreux que les consommateurs, ils terminent de mettre l'alphabet bien avant que les consommateurs ne puissent retirer de lettre vide. Ce qui fait qu'au final, le programme se termine avec les consommateurs qui prennent les lettres dans l'ordre alors que plus aucune lettre n'est déposée.
+
+Il y a un dernier petit problème que je n'arrive pas à résoudre, qui est que lorsque les consommateurs arrivent à "*", l'un d'entre eux, et ce peu importe le nombre de consommateurs que je mets, tire une lettre "null". Ce qui, logiquement, ne devrait pas pouvoir arriver.

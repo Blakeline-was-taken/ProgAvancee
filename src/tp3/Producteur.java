@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class Producteur implements Runnable {
     private BAL bal;
+    private String[] lettres = new String[]{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
 
     public Producteur(BAL bal) {
         this.bal = bal;
@@ -12,12 +13,12 @@ public class Producteur implements Runnable {
     public void run() {
         Scanner scanner = new Scanner(System.in);
         try {
-            String lettre;
-            do {
-                System.out.print("Entrez une lettre à déposer (ou 'Q' pour quitter) : ");
-                lettre = scanner.nextLine();
+            for (String lettre : lettres) {
                 bal.depose(lettre);
-            } while (!lettre.equals("Q"));  // Le programme continue tant que la lettre n'est pas 'Q'
+                Thread.sleep(1000);
+            }
+            // Indiquer la fin avec la lettre '*'
+            bal.depose("*");
         } catch (InterruptedException e) {Thread.currentThread().interrupt();
         } finally {scanner.close();}
     }

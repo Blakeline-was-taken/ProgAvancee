@@ -11,7 +11,7 @@ public class Consommateur implements Runnable {
             do {
                 lettre = bal.retrait();
                 Thread.sleep(1500);
-            } while (!lettre.equals("Q"));
+            } while (!lettre.equals("*"));
         } catch (InterruptedException e) {Thread.currentThread().interrupt();}
     }
 }

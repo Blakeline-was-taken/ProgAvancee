@@ -1,30 +1,21 @@
 package tp3;
 
-public class BAL {
-    private String lettre;
-    private boolean lettreDispo = false;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
-    public synchronized void depose(String lettre) throws InterruptedException {
-        // Attendre que la BAL soit vide avant de déposer une lettre
-        while (lettreDispo) {
-            wait();
-        }
-        this.lettre = lettre;
-        lettreDispo = true;
+public class BAL {
+    private BlockingQueue<String> queue = new ArrayBlockingQueue<String>(20);
+
+    public void depose(String lettre) throws InterruptedException {
+        queue.offer(lettre, 200, TimeUnit.MILLISECONDS);
         System.out.println("Producteur a déposé: " + lettre);
-        notifyAll();
     }
 
-    public synchronized String retrait() throws InterruptedException {
-        // Attendre que la BAL contienne une lettre avant de la retirer
-        while (!lettreDispo) {
-            wait();
-        }
-        String lettreRetiree = this.lettre;
-        lettreDispo = false;
-        System.out.println("Consommateur a retiré: " + lettreRetiree);
-        notifyAll();
-        return lettreRetiree;
+    public String retrait() throws InterruptedException {
+        String lettre = queue.poll(200, TimeUnit.MILLISECONDS);
+        System.out.println("Consommateur a retiré: " + lettre);
+        return lettre;
     }
 }
 
