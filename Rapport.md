@@ -12,6 +12,34 @@ Je précise également que ce rapport et ce dépot Git ont été créés vers la
 
 ---
 
+# Sommaire
+
+- [Introduction](#introduction)
+- [Architecture matérielle](#architecture-matérielle)
+- [TP 1](#tp1)
+   - [Qu'est-ce qu'un Thread?](#quest-ce-quun-thread)
+   - [Exercice 1](#exercice-1)
+   - [Exercice 2](#exercice-2)
+   - [Exercice 3](#exercice-3)
+- [TP 2](#tp2)
+   - [Section Critique](#section-critique)
+   - [Sémaphore](#sémaphore)
+   - [Exercice 1](#exercice-1-1)
+   - [Exercice 2](#exercice-2-1)
+   - [Exercice 3](#exercice-3-1)
+- [TP 3](#tp3)
+   - [Utilisation d'un Moniteur](#utilisation-dun-moniteur)
+   - [Modèle Producteur/Consommateur](#modèle-producteurconsommateur)
+   - [Exercice 1](#exercice-1-2)
+     - [I1](#i1)
+     - [I2](#i2)
+   - [Exercice 2](#exercice-2-2)
+     - [L’API Concurrent](#lapi-concurrent)
+     - [La BlockingQueue](#la-blockingqueue)
+     - [Adaptation du code](#adaptation-du-code)
+
+---
+
 # Architecture matérielle
 
 Au cours des différents TP que nous avons réalisé dans ce module, nous avons, à chaque fois que nous sommes allé dans de nouvelles salles, cherché les configurations matérielles des ordinateurs que nous avons utilisés :
