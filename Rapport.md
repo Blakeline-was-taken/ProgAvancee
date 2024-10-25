@@ -4,6 +4,8 @@ Ce dépôt Git servira de lieu de stockage pour tous les travaux pratiques liés
 
 Ces différentes thématiques seront explorées à travers des exercices pratiques qui serviront de base pour le projet de SAÉ de ce semestre. L'objectif est d'acquérir une maîtrise suffisante de ces concepts afin de pouvoir les appliquer efficacement dans le cadre de ce projet.
 
+Pour les diagrammes UML, je précise que je n'ai mis que les méthodes et les attributs pertinents des classes qui s'y figurent, par souci de clarté. Si vous voulez plus de détail, je vous invite à aller regarder le code par vous même, vous pouvez le faire en allant voir leur état au moment du commit correspondant à l'exercice.
+
 Je précise également que ce rapport et ce dépot Git ont été créés vers la fin du TP3 de ce module. En effet, j'avais fait un premier dépôt Git sur lequel j'ai eu des problèmes liés à des push qui n'ont pas correctement été faits, résultant en la perte de mon premier rapport, ainsi que ma progression sur les TPs qui ne s'affichaient pas correctement sur Github. Ce faisant, j'ai décidé de recommencer à zéro, en commitant le code que j'avais fait pour les différents TPs et en rédigeant ce rapport au fur et à mesure. 
 
 ---
@@ -52,9 +54,13 @@ L'OS décide quels threads sont exécutés et sur quels cœurs. Nous, on ne cont
 
 Le premier démarrage d'un thread via `start()` est initié par nous, mais ensuite, l'OS gère son exécution. Quand un thread termine la méthode `run()`, il disparaît définitivement.
 
+[Pour en savoir plus sur les Threads.](https://fr.wikipedia.org/wiki/Thread)
+
 ## Exercice 1
 
 L'exercice 1 nous demande d'implémenter le mouvement d'un mobile qui se déplace d'abord en avant, puis en arrière lorsqu'il atteint une extrémité de la fenêtre. Voici comment le code fonctionne :
+
+![uml_tp1_exo1](docs/uml_tp1_exo1.png)
 
 1. **Classe `UnMobile` :**
     - Cette classe hérite de `JPanel` et implémente l'interface `Runnable`, ce qui lui permet d'exécuter son code dans un thread distinct.
@@ -65,7 +71,11 @@ L'exercice 1 nous demande d'implémenter le mouvement d'un mobile qui se déplac
     - Hérite de `JFrame` et constitue la fenêtre principale de l'application. Dans son constructeur, une instance de `UnMobile` est créée et ajoutée au conteneur de la fenêtre.
     - Un thread est démarré pour exécuter la méthode `run()` de l'objet mobile, permettant ainsi le mouvement en continu.
 
+[Pour en savoir plus sur Swing.](https://docs.oracle.com/javase/8/docs/api/index.html?javax/swing/package-summary.html)
+
 ## Exercice 2
+
+![uml_tp1_exo2](docs/uml_tp1_exo2.png)
 
 Dans l'exercice 2, la classe `UneFenetre` a été modifiée pour inclure un bouton qui permet de contrôler le mouvement du mobile. Pour ce faire, un `ActionListener` a été attaché au bouton pour gérer les événements de clic. Lorsque le bouton est cliqué, il vérifie son texte :
    - Si le texte est "Stop", cela signifie que le mobile doit être arrêté. Le texte du bouton est changé en "Start", et la méthode `suspend()` est appelée sur le thread du mobile pour le mettre en pause.
@@ -76,6 +86,8 @@ Cependant, ce code ne fonctionne pas. En effet, les méthodes `suspend()` et `re
 Pour l'exercice 3, nous allons donc utiliser d'autres méthodes pour que ce dernier fonctionne.
 
 ## Exercice 3
+
+![uml_tp1_exo3](docs/uml_tp1_exo3.png)
 
 Nous avons étendu la fonctionnalité de notre application pour permettre le contrôle indépendant de deux mobiles en utilisant des boutons. Voici les principales modifications et le fonctionnement du code :
 
@@ -108,6 +120,8 @@ Cette situation est due à l'absence de **section critique**, une portion de cod
 
 Une façon de résoudre ce problème est d'utiliser un **verrou Mutex** (mutual exclusion). Le Mutex permet à un seul thread d'accéder à une ressource critique à la fois, bloquant les autres jusqu'à ce que le thread ayant verrouillé le Mutex le libère. Cela garantit qu'à tout moment, une seule tâche peut entrer dans la section critique. En java, il suffit d'ajouter le mot `synchronized` à la déclaration d'une méthode pour que celle-ci puisse être verrouillée.
 
+[Pour en savoir plus sur les sections et les ressources critiques.](https://ecampus.paris-saclay.fr/pluginfile.php/3446722/mod_resource/content/1/CM2-thread-java-et-sectionCritique.pdf)
+
 ## Sémaphore
 
 Il existe derrière plusieurs façons de gérer ces verrous, mais celle qu'on va utiliser, c'est le **sémaphore**. Il fonctionne comme un compteur : il autorise l'accès à la ressource si une valeur (appelée `valeurInitiale`) est positive, et décrémente ce compteur lorsque la ressource est accédée. Une fois que la tâche a terminé, elle incrémente le compteur pour libérer la ressource et permettre à une autre tâche d'y accéder.
@@ -116,11 +130,13 @@ Le mot "sémaphore" vient des systèmes de signalisation visuelle utilisés en m
 
 Du coup, concrètement, comment le sémaphore fonctionne en code ? Lorsqu'une tâche veut entrer dans la section critique (l'affichage dans notre cas), elle appelle la méthode `syncWait()` du sémaphore (qui décrémente le compteur). Si la valeur du sémaphore est positive, la tâche peut accéder à la ressource, sinon elle doit attendre que la ressource soit libérée. Une fois la section critique terminée, la tâche appelle la méthode `syncSignal()` (qui incrémente le compteur), libérant ainsi la ressource pour les autres processus.
 
+[Pour en savoir plus sur les sémaphores.](https://fr.wikipedia.org/wiki/S%C3%A9maphore_(informatique))
+
 ## Exercice 1
 
-### Explication du code de l'exercice 1
-
 Dans cet exercice, nous avons utilisé un **sémaphore binaire**, ce qui veut dire que la `valeurInitiale` commence à 1, ne laissant ainsi qu'un seul thread accéder à la ressource à la fois.
+
+![uml_tp2_exo1](docs/uml_tp2_exo1.png)
 
 1. **Classe `semaphore` et `semaphoreBinaire`** :  
    Ce sont les classes dont nous avons déjà parlé, semaphore implémente les méthodes `syncWait()` et `syncSignal`, et semaphoreBinaire mets juste la `valeurInitiale` à 1.
@@ -150,6 +166,8 @@ Pour gérer ce contrôle d'accès à la section critique, nous allons utiliser u
 Je précise ici que, pour ne pas avoir à répéter des fichiers de code sans raison, et par souci d'organisation, cet exercice sera réalisé dans le package **TP1**, bien qu'il s'agisse d'un exercice du TP2.
 
 ### Fonctionnement
+
+![uml_tp2_exo3](docs/uml_tp2_exo3.png)
 
 1. **Classe `semaphore` et `semaphoreGeneral`** :
 
@@ -188,6 +206,8 @@ L'utilisation du moniteur permet de s'assurer que :
 - Un thread producteur attendra si la BAL est pleine avant d'ajouter une nouvelle lettre.
 - Un thread consommateur attendra qu'une lettre soit disponible dans la BAL avant de la retirer.
 
+[Pour en savoir plus sur les Moniteurs.](https://fr.wikipedia.org/wiki/Moniteur_(programmation))
+
 ## Modèle Producteur/Consommateur
 
 Le cadre de ce TP nous demande donc d'implémenter le modèle **Producteur/Consommateur**. Ce modèle décrit deux types d'entités :
@@ -199,6 +219,8 @@ La BAL joue le rôle de ressource intermédiaire de Moniteur entre ces deux enti
 ## Exercice 1
 
 ### I1
+
+![uml_tp3_exo1](docs/uml_tp3_exo1.png)
 
 1. La Classe `BAL`
 
@@ -250,19 +272,23 @@ La `BlockingQueue` est une structure de données spécialement conçue pour gér
 
 Avec une BlockingQueue, on n’a plus besoin de gérer nous-mêmes les blocages et les notifications des threads (`synchronized`, `wait()`, `notifyAll()`), car elle se charge de tout cela automatiquement.
 
+[Pour en savoir plus sur l'API Concurrent et la BlockingQueue.](https://docs.oracle.com/javase/8/docs/api/?java/util/concurrent/BlockingQueue.html)
+
 ### Adaptation du code
+
+![uml_tp3_exo2](docs/uml_tp3_exo2.png)
 
 1. Changement de BAL : 
 
-`BAL` utilisera maintenant une `BlockingQueue<String>` au lieu d’une simple variable `lettre`. Cela lui permettra de gérer directement les lettres comme une file d'attente, sans besoin de synchronisation explicite.
+`BAL` utilisera maintenant une `BlockingQueue<String>` au lieu d’une simple variable `lettre`. Cela lui permettra de gérer directement les lettres comme une file d'attente, sans besoin de synchronisation explicite. Ses méthodes `déponse()` et `retrait()` ne sont désormais plus que des wrappers des méthodes `offer()` et `poll()` de `BlockingQueue`.
 
 2. Classe Producteur :
 
-Le producteur insérera désormais les lettres dans `BAL` via la méthode `put()`, qui bloque automatiquement si la file est pleine. De plus, on retire le changement où on écrit nous même les lettre. Il fera toutes les lettres et terminera par "*", ce qui tuera les processus. (rôle du `PainEmpoisonne` dans le blog.)
+Le producteur insérera désormais les lettres dans `BAL` via la méthode `depose()`, qui bloque automatiquement si la file est pleine. De plus, on retire le changement où on écrit nous même les lettres. Il fera toutes les lettres et terminera par "*", ce qui tuera les processus. (rôle du `PainEmpoisonne` dans le blog.)
 
 3. Classe Consommateur :
 
-Le consommateur retirera les lettres avec la méthode `take()`, qui bloque si la file est vide. Nous n’avons plus besoin d’écrire des boucles d’attente ou des vérifications d’état puisque la `BlockingQueue` s’occupe de ces aspects. Si la lettre est "*", le thread s'arrête.
+Le consommateur retirera les lettres avec la méthode `retrait()`, qui bloque si la file est vide. Nous n’avons plus besoin d’écrire des boucles d’attente ou des vérifications d’état puisque la `BlockingQueue` s’occupe de ces aspects. Si la lettre est "*", le thread s'arrête.
 
 4. Classe MainTP3 :
 
