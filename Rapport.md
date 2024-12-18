@@ -10,6 +10,8 @@ Pour les autres diagrammes et graphiques, toutes les images viennent de Wikipéd
 
 Je précise également que ce rapport et ce dépot Git ont été créés vers la fin du TP3 de ce module. En effet, j'avais fait un premier dépôt Git sur lequel j'ai eu des problèmes liés à des push qui n'ont pas correctement été faits, résultant en la perte de mon premier rapport, ainsi que ma progression sur les TPs qui ne s'affichaient pas correctement sur Github. Ce faisant, j'ai décidé de recommencer à zéro, en commitant le code que j'avais fait pour les différents TPs et en rédigeant ce rapport au fur et à mesure. 
 
+Ce rapport a été rédigé à l'aide de ChatGPT, dans le but de le simplifier et de le rendre plus cohérent.
+
 ---
 
 # Sommaire
